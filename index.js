@@ -47,9 +47,10 @@ Toolkit.run(async tools => {
             repo: repoName,
             body: commentMsg
         });
-        
+        tools.exit.neutral('Exited with terms identified')
     } else {
         console.log("No non inclusive terminology was found in this pull request. Nice Job! :)");
+        tools.exit.success('Exited successfully')
     }
-    tools.exit.success('Exited successfully')
+
 });
