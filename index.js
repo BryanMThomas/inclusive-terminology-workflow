@@ -23,6 +23,8 @@ Toolkit.run(async tools => {
     }
     else { // event was not a pull request of expected event
         console.log(`Unexpected event occurred. action context: ${tools.context}`)
+        tools.exit.neutral('Exited with unexpected event')
+
     }
 
     // split body into separate strings (terms)
