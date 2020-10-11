@@ -1,0 +1,8 @@
+name: Inclusive Terminology Workflow
+description: Report any non-inclusive terminology found in a code base
+runs:
+  using: docker
+  image: Dockerfile
+branding:
+  icon: alert-circle
+  color: purple
