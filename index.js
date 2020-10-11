@@ -11,20 +11,17 @@ Toolkit.run(async tools => {
     // Console logs to the actions dashboard
     console.log(tools.context); //debug line
     const repoName = tools.context.payload.repository.name;
-    //pull request events that trigger workflow
-    const expected_events = ['opened', 'edited', 'reopened']
 
     //Executes on Pull Requests
-    if (expected_events.includes(tools.context.payload.action) && tools.context.payload.pull_request) {
+    if (tools.context.payload.pull_request) {
         // Pull Request details
         user = tools.context.payload.pull_request.user
         body = tools.context.payload.pull_request.body
         pullRequestNum = tools.context.payload.pull_request.number
     }
-    else { // event was not a pull request of expected event
-        console.log(`Unexpected event occurred. action context: ${tools.context}`)
+    else { // event was not a pull request
+        console.log('Unexpected event occurred. action context: ',tools.context.payload)
         tools.exit.neutral('Exited with unexpected event')
-
     }
 
     // split body into separate strings (terms)
