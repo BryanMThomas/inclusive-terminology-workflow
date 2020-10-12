@@ -20,7 +20,7 @@ Toolkit.run(async tools => {
             if (word.includes(term)) {
                 checkFailed = true;
                 termsFound.push({
-                    "term found": term,
+                    "termFound": term,
                     "wordFound": word
                 })
             }
