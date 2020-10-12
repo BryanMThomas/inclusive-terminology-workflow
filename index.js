@@ -16,19 +16,24 @@ Toolkit.run(async tools => {
 
     // Pull Request details
     pullRequestNum = tools.context.payload.pull_request.number
-    console.log("workspace ",tools.workspace);
+    console.log("workspace ", tools.workspace);
     const contents = await tools.readFile('test.txt')
-    console.log("contents ",contents)
-    let bodyArr = contents.split(" ")
+    console.log("contents ", contents)
+    let bodyArr = contents.split(/\s|\n|\r|,/g)
     console.log("Array", bodyArr)
 
     // Check if a term was found in the non inclusive dictionary
     let errorFound = false;
     let termsFound = [];
-    for (let term of bodyArr) {
-        if ((terminologyDict.indexOf(term) != -1)) {
-            errorFound = true;
-            termsFound.push({ "term found": term })
+    for (let word of bodyArr) {
+        for (let term of terminologyDict) {
+            if (word.includes(term)) {
+                errorFound = true;
+                termsFound.push({
+                    "term found": term,
+                    "wordFound": word
+                })
+            }
         }
     }
 
@@ -37,7 +42,7 @@ Toolkit.run(async tools => {
         const commentMsg = `
       Please review your recent code change for non inclusive terms.\n
       Terms Found: ${termsFound}`;
-      console.log(commentMsg);
+        console.log(commentMsg);
         await tools.github.issues.createComment({
             body: commentMsg
         });
