@@ -2,9 +2,6 @@ const { Toolkit } = require('actions-toolkit')
 const fs = require('fs');
 const { terminologyDict } = require('./terminologyDict');
 
-// Create variables to hold values
-let pullRequestNum = '';
-
 //Execute Work Flow
 Toolkit.run(async tools => {
     // Console logs to the actions dashboard
@@ -15,7 +12,6 @@ Toolkit.run(async tools => {
     }
 
     // Pull Request details
-    pullRequestNum = tools.context.payload.pull_request.number
     let pathWork = tools.workspace;
     console.log("workspace ", pathWork);
     const contents = await tools.readFile('test.txt')
@@ -67,6 +63,9 @@ Toolkit.run(async tools => {
       Terms Found: ${JSON.stringify(termsFound)}`;
         console.log(commentMsg);
         await tools.github.issues.createComment({
+            owner: tools.context.payload.repository.owner.login,
+            issue_number: tools.context.payload.pull_request.number,
+            repo: tools.context.payload.repository.name,
             body: commentMsg
         });
         tools.exit.neutral('Exited with terms identified')
