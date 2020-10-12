@@ -16,11 +16,19 @@ Toolkit.run(async tools => {
 
     // Pull Request details
     pullRequestNum = tools.context.payload.pull_request.number
+    let pathWork = tools.workspace;
     console.log("workspace ", tools.workspace);
     const contents = await tools.readFile('test.txt')
     console.log("contents ", contents)
     let bodyArr = contents.split(/\s|\n|\r|,/g)
     console.log("Array", bodyArr)
+
+    fs.readdir(pathWork, (err, files) => {
+        console.log("reading files", files)
+        files.forEach(file => {
+          console.log(file);
+        });
+      });
 
     // Check if a term was found in the non inclusive dictionary
     let errorFound = false;
