@@ -16,7 +16,7 @@ Toolkit.run(async tools => {
     console.log("workspace ", pathWork);
     const contents = await tools.readFile('test.txt')
     console.log("contents ", contents)
-    let bodyArr = contents.split(/\s|\n|\r|,/g).toLowerCase()
+    let bodyArr = contents.toLowerCase().split(/\s|\n|\r|,/g)
     console.log("Array", bodyArr)
 
     let errorFound = false;
