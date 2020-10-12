@@ -36,30 +36,29 @@ Toolkit.run(async tools => {
             }
         }
     }
+    //TODO Read all files
+    // // Check if a term was found in the non inclusive dictionary
+    // let errorFound2 = false;
+    // let termsFoundReader = [];
+    // let files = fs.readdir(pathWork, (err, files) => { return files });
+    // for (file of files) {
+    //     console.log("File: ", file);
+    //     let contents2 = await tools.readFile(file)
+    //     bodyArr = contents2.split(/\s|\n|\r|,/g)
+    //     for (let word of bodyArr) {
+    //         for (let term of terminologyDict) {
+    //             if (word.includes(term)) {
+    //                 errorFound2 = true;
+    //                 termsFoundReader.push({
+    //                     "term found": term,
+    //                     "wordFound": word
+    //                 })
+    //             }
+    //         }
+    //     }
+    // }
 
-
-    // Check if a term was found in the non inclusive dictionary
-    let errorFound2 = false;
-    let termsFoundReader = [];
-    let files = fs.readdir(pathWork, (err, files) => { return files });
-    for (file of files) {
-        console.log("File: ", file);
-        let contents2 = await tools.readFile(file)
-        bodyArr = contents2.split(/\s|\n|\r|,/g)
-        for (let word of bodyArr) {
-            for (let term of terminologyDict) {
-                if (word.includes(term)) {
-                    errorFound2 = true;
-                    termsFoundReader.push({
-                        "term found": term,
-                        "wordFound": word
-                    })
-                }
-            }
-        }
-    }
-
-    console.log("reader", JSON.stringify(termsFoundReader))
+    //console.log("reader", JSON.stringify(termsFoundReader))
 
     // When a term is found post a comment on the PR
     if (errorFound) {
