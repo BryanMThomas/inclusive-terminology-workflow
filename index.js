@@ -19,21 +19,8 @@ Toolkit.run(async tools => {
     console.log("workspace ",tools.workspace);
     const contents = await tools.readFile('test.txt')
     console.log("contents ",contents)
-
-    //requiring path and fs modules
-const fs = require('fs');
-fs.readdir(tools.workspace, function (err, files) {
-    //handling error
-    if (err) {
-        return console.log('Unable to scan directory: ' + err);
-    } 
-    //listing all files using forEach
-    files.forEach(function (file) {
-        // Do whatever you want to do with the file
-        console.log(file); 
-    });
-})
-
+    let bodyArr = contents.split(" ")
+    console.log("Array", bodyArr)
 
     // Check if a term was found in the non inclusive dictionary
     let errorFound = false;
