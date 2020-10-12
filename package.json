@@ -10,7 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "actions-toolkit": "^6.0.1"
+    "actions-toolkit": "^6.0.1",
+    "fs": "0.0.1-security"
   },
   "devDependencies": {
     "jest": "^26.5.3"

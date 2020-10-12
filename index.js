@@ -1,4 +1,5 @@
 const { Toolkit } = require('actions-toolkit')
+const fs = require('fs');
 const { terminologyDict } = require('./terminologyDict');
 
 // Create variables to hold values
@@ -16,7 +17,22 @@ Toolkit.run(async tools => {
     // Pull Request details
     pullRequestNum = tools.context.payload.pull_request.number
     console.log("workspace ",tools.workspace);
-    const contents = await tools.readFile('test.txt').then(console.log("contents ",contents))
+    const contents = await tools.readFile('test.txt')
+    console.log("contents ",contents)
+
+    //requiring path and fs modules
+const fs = require('fs');
+fs.readdir(tools.workspace, function (err, files) {
+    //handling error
+    if (err) {
+        return console.log('Unable to scan directory: ' + err);
+    } 
+    //listing all files using forEach
+    files.forEach(function (file) {
+        // Do whatever you want to do with the file
+        console.log(file); 
+    });
+})
 
 
     // Check if a term was found in the non inclusive dictionary
