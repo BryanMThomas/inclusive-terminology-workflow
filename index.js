@@ -27,7 +27,7 @@ Toolkit.run(async tools => {
     let termsFound = [];
     for (let word of bodyArr) {
         for (let term of terminologyDict) {
-            if (word.includes(term)) {
+            if (word.toLowerCase().includes(term)) {
                 errorFound = true;
                 termsFound.push({
                     "term found": term,
