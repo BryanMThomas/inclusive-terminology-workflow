@@ -8,7 +8,7 @@ let pullRequestNum = '';
 //Execute Work Flow
 Toolkit.run(async tools => {
     // Console logs to the actions dashboard
-    console.log(tools.context); //debug line
+    //console.log(tools.context); //debug line
     if (!tools.context.payload.pull_request) { // event was not a pull request
         console.log('Unexpected event occurred. action context: ', tools.context.payload)
         tools.exit.neutral('Exited with unexpected event')
@@ -20,14 +20,14 @@ Toolkit.run(async tools => {
     console.log("workspace ", pathWork);
     const contents = await tools.readFile('test.txt')
     console.log("contents ", contents)
-    let bodyArr = contents.split(/\s|\n|\r|,/g)
+    let bodyArr = contents.split(/\s|\n|\r|,/g).toLowerCase()
     console.log("Array", bodyArr)
 
     let errorFound = false;
     let termsFound = [];
     for (let word of bodyArr) {
         for (let term of terminologyDict) {
-            if (word.toLowerCase().includes(term)) {
+            if (word.includes(term)) {
                 errorFound = true;
                 termsFound.push({
                     "term found": term,
