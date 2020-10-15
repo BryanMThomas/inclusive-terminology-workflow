@@ -1,13 +1,11 @@
 const { Toolkit } = require('actions-toolkit')
 const core = require('@actions/core');
 const glob = require('@actions/glob')
-const githubA = require('@actions/github');
 const fs = require('fs');
 const { terminologyDict } = require('./terminologyDict');
 
 //Execute Work Flow
 Toolkit.run(async tools => {
-    const contextA = githubA.context
     const messageId = core.getInput("message_id");
     const prOnly = JSON.parse(core.getInput("pr_only").toLowerCase())
     const globPattern = core.getInput("glob_pattern")
@@ -17,11 +15,6 @@ Toolkit.run(async tools => {
         console.log('Unexpected event occurred. action context: ', tools.context.payload)
         tools.exit.neutral('Exited with unexpected event')
     }
-
-    console.log("contextA number", contextA.issue.number)
-    console.log("context OG number", tools.context.issue.number)
-    console.log("prnumber",tools.context.payload.pull_request.number)
-    console.log("prnumber2", tools.context.pullRequest.number)
 
     const globber = await glob.create(globPattern)
     let files = await globber.glob()
@@ -45,11 +38,12 @@ Toolkit.run(async tools => {
             }
           `,
             {
-                owner: contextA.repo.owner,
-                name: contextA.repo.repo,
-                prNumber: contextA.issue.number
+                owner: tools.context.repo.owner,
+                name: tools.context.repo.repo,
+                prNumber: pullRequestNumber
             }
         );
+        console.log("PRINFO", prInfo)
         let prFiles = prInfo.repository.pullRequest.files.nodes.map(f => path.resolve(f.path));
         files = files.filter(x => prFiles.includes(x))
         console.log("FILES After PR", files);
@@ -57,7 +51,7 @@ Toolkit.run(async tools => {
 
 
 
-    const checkComment = generateComment(files, noBinary, profanitySureness)
+    const checkComment = generateComment(files)
     const previousPr = await findPreviousComment(tools.github, repo, number, messageId);
     // When a term is found post a comment on the PR
     if (previousPr) {
