@@ -53,20 +53,12 @@ Toolkit.run(async tools => {
     const checkComment = generateComment(files, noBinary, profanitySureness)
     const previousPr = await findPreviousComment(tools.github, repo, number, messageId);
     // When a term is found post a comment on the PR
-    if (checkFailed) {
-        const commentMsg = `Please review your recent code change for non inclusive terms.\n
-          Terms Found: ${JSON.stringify(termsFound)}`;
-        console.log(commentMsg);
-        await tools.github.issues.createComment({
-            owner: tools.context.payload.repository.owner.login,
-            issue_number: pullRequestNumber,
-            repo: tools.context.payload.repository.name,
-            body: commentMsg
-        });
-        tools.exit.neutral('Exited with terms identified')
+    if (previousPr) {
+        console.log("found old comment")
+        await updateComment(tools.github, repo, previous.id, messageId, checkComment)
     } else {
-        console.log("No non inclusive terminology was found in this pull request. Nice Job! :)");
-        tools.exit.success('Exited successfully')
+        console.log("created new comment")
+        await createComment(tools.github, repo, number, messageId, checkComment);
     }
 
 });

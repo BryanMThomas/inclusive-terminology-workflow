@@ -14,7 +14,7 @@ function generateComment(filesList) {
 function checkFile(file, options) {
     console.warn(`checking ${file}`)
     const body = fs.readFileSync(file, "utf-8");
-    console.log("File Body: ",body)
+    console.log("File Body: ", body)
     const fileContentsArr = body.toLowerCase().split(/\s|\n|\r|,/g)
     let checkFailed = false;
     let termsFound = [];
@@ -24,12 +24,13 @@ function checkFile(file, options) {
                 checkFailed = true;
                 termsFound.push({
                     "termFound": term,
-                    "wordFound": word
+                    "wordFound": word,
+                    "line": "TODO"
                 })
             }
         }
     }
-    return ""
+    return termsFound
 }
 
 function formatComment(checkRes) {
@@ -48,17 +49,22 @@ function formatComment(checkRes) {
 
 function formatFileTable(res) {
     // don't post anything for files that are good
-    if (res.result.messages.length == 0) {
+    if (res.result.length == 0) {
         return ''
     }
 
-    let filePath = path.relative(process.cwd(), res.filePath)
+    let filePath = path.relative('/github/workspace', res.filePath)
     let header = `### ${filePath}\n`
-    let tableHeader = `| Level | Location | Word | Recommendation |\n| :---: | :---: | :---: | :--- |\n`
+    let tableHeader = `| Level | Location | Word | Term |\n| :---: | :---: | :---: | :--- |\n`
 
-    let rows = res.result.messages.map(msg => formatRow(msg))
+    let rows = res.result.map(item => formatRow(item))
 
     return `${header}${tableHeader}${rows.join('\n')}\n`
+}
+
+function formatRow(item) {
+    let status = `:warning:`
+    return `| ${status} | ${item.line} | ${item.wordFound} | ${item.termFound} |`
 }
 
 async function createComment(github, repo, issue_number, message_id, comment) {
@@ -70,17 +76,8 @@ async function createComment(github, repo, issue_number, message_id, comment) {
     });
 }
 
-function formatRow(msg) {
-    let status = `:warning:`
-    if (msg.fatal) {
-        status = `:stop_sign:`
-    }
-
-    return `| ${status} | ${msg.line}:${msg.column} | ${msg.actual} | ${msg.reason} |`
-}
-
 async function updateComment(github, repo, comment_id, message_id, comment) {
-    const HEADER = `<!-- Alex Pull Request Comment - ${message_id} -->`;
+    const HEADER = `<!-- Inclusive Terminology Pull Request Comment - ${message_id} -->`;
     await github.issues.updateComment({
         ...repo,
         comment_id,
