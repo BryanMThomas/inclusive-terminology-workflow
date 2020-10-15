@@ -52,7 +52,10 @@ Toolkit.run(async tools => {
     
     //checks if PR has already been commented on by bot
     const previousPr = await findPreviousComment(tools.github, tools.context.repo, pullRequestNumber, messageId);
-
+    //debug
+    console.log("Repo", tools.context.repo)
+    console.log("Message ID", messageId)
+    console.log("prevPR", previousPr)
     if (previousPr) {
         console.log("Found already created comment")
         await updateComment(tools.github, tools.context.repo, previousPr.id, messageId, prBotComment)
