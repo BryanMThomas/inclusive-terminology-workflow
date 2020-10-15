@@ -59,7 +59,7 @@ async function findPreviousComment(github, repo, issue_number, message_id) {
         ...repo,
         issue_number
     });
-    const { data: comments2 } = await github.pulls.listComments({
+    const { data: comments2 } = await github.pulls.listReviewComments({
         ...repo,
         issue_number
     });
