@@ -63,7 +63,9 @@ async function findPreviousComment(github, repo, issue_number, message_id) {
         ...repo,
         issue_number
     });
-    console.log("first Method", comments)
+
+
+
     console.log("second Method", comments2)
     return comments.find(comment => comment.body.startsWith(HEADER));
 }
