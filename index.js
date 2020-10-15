@@ -47,13 +47,13 @@ Toolkit.run(async tools => {
     }
 
     const checkComment = generateComment(files)
-    const previousPr = await findPreviousComment(tools.github, repo, number, messageId);
+    const previousPr = await findPreviousComment(tools.github, tools.context.repo, prNumber, messageId);
     // When a term is found post a comment on the PR
     if (previousPr) {
         console.log("found old comment")
-        await updateComment(tools.github, repo, previous.id, messageId, checkComment)
+        await updateComment(tools.github, tools.context.repo, previous.id, messageId, checkComment)
     } else {
         console.log("created new comment")
-        await createComment(tools.github, repo, number, messageId, checkComment);
+        await createComment(tools.github, tools.context.repo, prNumber, messageId, checkComment);
     }
 });

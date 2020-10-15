@@ -14,12 +14,10 @@ function checkFile(file) {
     console.log(`checking ${file}`)
     const body = fs.readFileSync(file, "utf-8");
     const fileContentsArr = body.toLowerCase().split(/\s|\n|\r|,/g)
-    let checkFailed = false;
     let termsFound = [];
     for (let word of fileContentsArr) {
         for (let term of terminologyDict) {
             if (word.includes(term)) {
-                checkFailed = true;
                 termsFound.push({
                     "termFound": term,
                     "wordFound": word,
