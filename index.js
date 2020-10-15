@@ -19,9 +19,9 @@ Toolkit.run(async tools => {
     const globber = await glob.create(globPattern)
     let files = await globber.glob()
     console.log("FILES  ", files);
-    const fileContents = await tools.readFile('test.txt')
-    const fileContentsArr = fileContents.toLowerCase().split(/\s|\n|\r|,/g)
 
+    console.log("owner", tools.context.repo.owner)
+    console.log("repo", tools.context.repo.repo)
     if (prOnly) { //only scan changed files
         const prInfo = await tools.github.graphql(
             `
@@ -43,7 +43,7 @@ Toolkit.run(async tools => {
                 prNumber: pullRequestNumber
             }
         );
-        console.log("PRINFO", prInfo)
+        console.log("PRINFO", JSON.stringify(prInfo.repository.pullRequest))
         let prFiles = prInfo.repository.pullRequest.files.nodes.map(f => path.resolve(f.path));
         files = files.filter(x => prFiles.includes(x))
         console.log("FILES After PR", files);
