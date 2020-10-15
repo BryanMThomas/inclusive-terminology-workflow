@@ -55,8 +55,6 @@ async function updateComment(github, repo, comment_id, message_id, comment) {
 
 async function findPreviousComment(github, repo, issue_number, message_id) {
     const HEADER = `<!-- Inclusive Terminology Pull Request Comment - ${message_id} -->`; // Always a technical comment
-    console.log("issues",github.issues)
-    console.log("pr", github.pulls)
     const { data: comments } = await github.issues.listComments({
         ...repo,
         issue_number
