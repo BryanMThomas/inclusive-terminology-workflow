@@ -2,16 +2,17 @@ const fs = require("fs-extra")
 const { terminologyDict } = require('./terminologyDict');
 function generateComment(filesList) {
     const filteredFilesList = filesList.filter((value) => fs.existsSync(value));
+    console.log("Filtered File List ", filteredFilesList)
 
     let checkRes = filteredFilesList.map(file => {
-        const resp = checkFile(file, options)
+        const resp = checkFile(file)
         return { filePath: file, result: resp }
     })
 
     return formatComment(checkRes)
 }
 
-function checkFile(file, options) {
+function checkFile(file) {
     console.warn(`checking ${file}`)
     const body = fs.readFileSync(file, "utf-8");
     console.log("File Body: ", body)

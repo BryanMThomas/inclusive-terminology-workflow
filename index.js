@@ -4,6 +4,7 @@ const glob = require('@actions/glob')
 const fs = require('fs');
 const path = require("path")
 const { terminologyDict } = require('./terminologyDict');
+const { findPreviousComment, createComment, updateComment, generateComment } = require("./utils")
 
 //Execute Work Flow
 Toolkit.run(async tools => {
@@ -19,10 +20,6 @@ Toolkit.run(async tools => {
 
     const globber = await glob.create(globPattern)
     let files = await globber.glob()
-    console.log("FILES  ", files);
-
-    console.log("owner", tools.context.repo.owner)
-    console.log("repo", tools.context.repo.repo)
     if (prOnly) { //only scan changed files
         const prInfo = await tools.github.graphql(
             `
@@ -46,7 +43,7 @@ Toolkit.run(async tools => {
         );
         let prFiles = prInfo.repository.pullRequest.files.nodes.map(f => path.resolve(f.path));
         files = files.filter(x => prFiles.includes(x))
-        console.log("FILES After PR", files);
+        console.log("Files Changed in PR", files);
     }
 
     const checkComment = generateComment(files)
