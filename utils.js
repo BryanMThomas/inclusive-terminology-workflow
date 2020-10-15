@@ -59,14 +59,9 @@ async function findPreviousComment(github, repo, issue_number, message_id) {
         ...repo,
         issue_number
     });
-    const { data: comments2 } = await github.pulls.listReviewComments({
-        ...repo,
-        issue_number
-    });
 
+    console.log(comments)
 
-
-    console.log("second Method", comments2)
     return comments.find(comment => comment.body.startsWith(HEADER));
 }
 
