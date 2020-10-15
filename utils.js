@@ -62,7 +62,7 @@ async function findPreviousComment(github, repo, issue_number, message_id) {
 
     comments.map(comment =>{
         console.log("MATCH: ",comment.body.startsWith(HEADER))
-        console.log("Body",body)
+        console.log("Body",comment.body)
     })
 
     return comments.find(comment => comment.body.startsWith(HEADER));
