@@ -1,5 +1,15 @@
 name: Inclusive Terminology Workflow
 description: Report any non-inclusive terminology found in a code base
+inputs:
+  message_id:
+    description: "string to identify this message, once a message with this id is added - won't be added again"
+    default: 'Inclusive Check'
+  glob_pattern:
+    description: "Glob pattern used for filtering files"
+    default: "*"
+  pr_only:
+    description: "Whether to only run on files changed in this PR"
+    default: true
 runs:
   using: docker
   image: Dockerfile
