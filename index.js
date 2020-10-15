@@ -2,6 +2,7 @@ const { Toolkit } = require('actions-toolkit')
 const core = require('@actions/core');
 const glob = require('@actions/glob')
 const fs = require('fs');
+const path = require("path")
 const { terminologyDict } = require('./terminologyDict');
 
 //Execute Work Flow
@@ -43,13 +44,10 @@ Toolkit.run(async tools => {
                 prNumber: pullRequestNumber
             }
         );
-        console.log("PRINFO", JSON.stringify(prInfo.repository.pullRequest))
         let prFiles = prInfo.repository.pullRequest.files.nodes.map(f => path.resolve(f.path));
         files = files.filter(x => prFiles.includes(x))
         console.log("FILES After PR", files);
     }
-
-
 
     const checkComment = generateComment(files)
     const previousPr = await findPreviousComment(tools.github, repo, number, messageId);
@@ -61,5 +59,4 @@ Toolkit.run(async tools => {
         console.log("created new comment")
         await createComment(tools.github, repo, number, messageId, checkComment);
     }
-
 });
