@@ -1,6 +1,6 @@
 const fs = require("fs-extra")
 const { terminologyDict } = require('./terminologyDict');
-const { formatComment: formatResponse } = require('./format')
+const { formatResponse } = require('./format')
 
 function generateComment(filesList) {
     //Verifies files are accessible
