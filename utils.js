@@ -1,16 +1,22 @@
 const fs = require("fs-extra")
 const { terminologyDict } = require('./terminologyDict');
-const path = require("path")
+const { formatComment: formatResponse } = require('./format')
+
 function generateComment(filesList) {
+    //Verifies files are accessible
     const filteredFilesList = filesList.filter((value) => fs.existsSync(value));
+    //Iterate through files checking each one
     let checkRes = filteredFilesList.map(file => {
         const resp = checkFile(file)
         return { filePath: file, result: resp }
     })
-    return formatComment(checkRes)
+    //Return formatted response to comment on PR
+    return formatResponse(checkRes)
 }
 
-function checkFile(file) {
+//Verified contents of file against dictionary
+function checkFile(file) { 
+    //TODO: More efficient way to compare file contents to dictionary
     console.log(`checking ${file}`)
     const body = fs.readFileSync(file, "utf-8");
     const fileContentsArr = body.toLowerCase().split(/\s|\n|\r|,/g)
@@ -29,42 +35,8 @@ function checkFile(file) {
     return termsFound
 }
 
-function formatComment(checkRes) {
-    let header = `# Inclusive Terms Report\n Please make the following language changes.\n`
-    let success = `### :sparkles: :rocket: :sparkles: 0 Non-Inclusve Terms Found :sparkles: :rocket: :sparkles:`
-
-    let sections = checkRes.map(res => formatFileTable(res))
-
-    if (sections.every(section => section === '') || sections.length == 0) {
-        return `${header}${success}`
-    } else {
-        return `${header}${sections.join('\n')}`
-    }
-
-}
-
-function formatFileTable(res) {
-    // don't post anything for files that are good
-    if (res.result.length == 0) {
-        return ''
-    }
-
-    let filePath = path.relative('/github/workspace', res.filePath)
-    let header = `### ${filePath}\n`
-    let tableHeader = `| Level | Location | Word | Term |\n| :---: | :---: | :---: | :--- |\n`
-
-    let rows = res.result.map(item => formatRow(item))
-
-    return `${header}${tableHeader}${rows.join('\n')}\n`
-}
-
-function formatRow(item) {
-    let status = `:warning:`
-    return `| ${status} | ${item.line} | ${item.wordFound} | ${item.termFound} |`
-}
-
 async function createComment(github, repo, issue_number, message_id, comment) {
-    const HEADER = `<!-- Alex Pull Request Comment - ${message_id} -->`;
+    const HEADER = `<!-- Inclusive Terminology Pull Request Comment - ${message_id} -->`;
     await github.issues.createComment({
         ...repo,
         issue_number,
