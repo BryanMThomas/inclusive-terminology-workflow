@@ -1,74 +1,62 @@
 const { Toolkit } = require('actions-toolkit')
-const fs = require('fs');
-const { terminologyDict } = require('./terminologyDict');
+const core = require('@actions/core');
+const glob = require('@actions/glob')
+const path = require("path")
+const { findPreviousComment, createComment, updateComment, generateComment } = require("./utils")
 
 //Execute Work Flow
 Toolkit.run(async tools => {
-    //console.log(tools.context); //debug line
-    if (!tools.context.payload.pull_request) { // event was not a pull request
+    const messageId = core.getInput("message_id");
+    const prOnly = JSON.parse(core.getInput("pr_only").toLowerCase())
+    const globPattern = core.getInput("glob_pattern")
+    const pullRequestNumber = tools.context.payload.pull_request.number;
+
+    if (!pullRequestNumber) { // event was not a pull request
         console.log('Unexpected event occurred. action context: ', tools.context.payload)
         tools.exit.neutral('Exited with unexpected event')
     }
 
-    const fileContents = await tools.readFile('test.txt')
-    const fileContentsArr = fileContents.toLowerCase().split(/\s|\n|\r|,/g)
+    //get all Files in workspace that match globPattern
+    const globber = await glob.create('*');
+    let files = await globber.glob()
 
-    let checkFailed = false;
-    let termsFound = [];
-    for (let word of fileContentsArr) {
-        for (let term of terminologyDict) {
-            if (word.includes(term)) {
-                checkFailed = true;
-                termsFound.push({
-                    "termFound": term,
-                    "wordFound": word
-                })
+    //only scan changed files if prOnly is set true
+    if (prOnly) {
+        const prInfo = await tools.github.graphql(
+            `
+            query prInfo($owner: String!, $name: String!, $prNumber: Int!) {
+              repository(owner: $owner, name: $name) {
+                pullRequest(number: $prNumber) {
+                  files(first: 100) {
+                    nodes {
+                      path
+                    }
+                  }
+                }
+              }
             }
-        }
+          `,
+            {
+                owner: tools.context.repo.owner,
+                name: tools.context.repo.repo,
+                prNumber: pullRequestNumber
+            }
+        );
+        let prFiles = prInfo.repository.pullRequest.files.nodes.map(f => path.resolve(f.path));
+        files = files.filter(x => prFiles.includes(x))
+        console.log("Files Changed in PR", files);
     }
-    //More efficient search?
-    let termsFound2 = fileContentsArr.filter(value => terminologyDict.includes(value));
 
-    // When a term is found post a comment on the PR
-    if (checkFailed) {
-        const commentMsg = `Please review your recent code change for non inclusive terms.\n
-          Terms Found: ${JSON.stringify(termsFound)}`;
-        console.log(commentMsg);
-        await tools.github.issues.createComment({
-            owner: tools.context.payload.repository.owner.login,
-            issue_number: tools.context.payload.pull_request.number,
-            repo: tools.context.payload.repository.name,
-            body: commentMsg
-        });
-        tools.exit.neutral('Exited with terms identified')
+    //Completes the term check & generated comment for PR
+    const prBotComment = generateComment(files)
+    
+    //checks if PR has already been commented on by bot
+    const previousPr = await findPreviousComment(tools.github, tools.context.repo, pullRequestNumber, messageId);
+    if (previousPr) {
+        console.log("Found already created comment")
+        await updateComment(tools.github, tools.context.repo, previousPr.id, messageId, prBotComment)
     } else {
-        console.log("No non inclusive terminology was found in this pull request. Nice Job! :)");
-        tools.exit.success('Exited successfully')
+        console.log("Created new comment")
+        await createComment(tools.github, tools.context.repo, pullRequestNumber, messageId, prBotComment);
     }
-
-    //TODO Read all files
-    // // Check if a term was found in the non inclusive dictionary
-    // let pathWork = tools.workspace;
-    // console.log("workspace ", pathWork);
-    // let errorFound2 = false;
-    // let termsFoundReader = [];
-    // let files = fs.readdir(pathWork, (err, files) => { return files });
-    // for (file of files) {
-    //     console.log("File: ", file);
-    //     let contents2 = await tools.readFile(file)
-    //     bodyArr = contents2.split(/\s|\n|\r|,/g)
-    //     for (let word of bodyArr) {
-    //         for (let term of terminologyDict) {
-    //             if (word.includes(term)) {
-    //                 errorFound2 = true;
-    //                 termsFoundReader.push({
-    //                     "term found": term,
-    //                     "wordFound": word
-    //                 })
-    //             }
-    //         }
-    //     }
-    // }
-    //console.log("reader", JSON.stringify(termsFoundReader))
-
 });
