@@ -61,8 +61,7 @@ const { findPreviousComment, createComment, updateComment, generateComment } = _
 //Execute Work Flow
 async function run() {
   try {
-    const messageId = core.getInput("message_id");
-    const prOnly = JSON.parse(core.getInput("pr_only").toLowerCase())
+    const allFiles = JSON.parse(core.getInput("allFiles").toLowerCase())
     const githubToken = core.getInput("GITHUB_TOKEN", {required: true});
     //const globPattern = core.getInput("glob_pattern")
     const pullRequestNumber = github.context.payload.pull_request.number;
@@ -78,8 +77,8 @@ async function run() {
     const globber = await glob.create('*');
     let files = await globber.glob()
 
-    //only scan changed files if prOnly is set true
-    if (prOnly) {
+    //only scan changed files if allFiles is set to false
+    if (!allFiles) {
       const prInfo = await octokit.graphql(
         `
             query prInfo($owner: String!, $name: String!, $prNumber: Int!) {
@@ -109,13 +108,13 @@ async function run() {
     const prBotComment = generateComment(files)
 
     //checks if PR has already been commented on by bot
-    const previousPr = await findPreviousComment(octokit, github.context.repo, pullRequestNumber, messageId);
+    const previousPr = await findPreviousComment(octokit, github.context.repo, pullRequestNumber);
     if (previousPr) {
       console.log("Found already created comment")
-      await updateComment(octokit, github.context.repo, previousPr.id, messageId, prBotComment)
+      await updateComment(octokit, github.context.repo, previousPr.id, prBotComment)
     } else {
       console.log("Created new comment")
-      await createComment(octokit, github.context.repo, pullRequestNumber, messageId, prBotComment);
+      await createComment(octokit, github.context.repo, pullRequestNumber, prBotComment);
     }
   } catch (err) {
     core.setFailed(error.message);
@@ -11228,8 +11227,8 @@ function checkFile(file) {
     return termsFound
 }
 
-async function createComment(github, repo, issue_number, message_id, comment) {
-    const HEADER = `<!-- Inclusive Terminology Pull Request Comment - ${message_id} -->`;
+async function createComment(github, repo, issue_number, comment) {
+    const HEADER = `<!-- Inclusive Terminology Pull Request Comment -->`;
     await github.issues.createComment({
         ...repo,
         issue_number,
@@ -11237,8 +11236,8 @@ async function createComment(github, repo, issue_number, message_id, comment) {
     });
 }
 
-async function updateComment(github, repo, comment_id, message_id, comment) {
-    const HEADER = `<!-- Inclusive Terminology Pull Request Comment - ${message_id} -->`;
+async function updateComment(github, repo, comment_id, comment) {
+    const HEADER = `<!-- Inclusive Terminology Pull Request Comment -->`;
     await github.issues.updateComment({
         ...repo,
         comment_id,
@@ -11246,8 +11245,8 @@ async function updateComment(github, repo, comment_id, message_id, comment) {
     });
 }
 
-async function findPreviousComment(github, repo, issue_number, message_id) {
-    const HEADER = `<!-- Inclusive Terminology Pull Request Comment - ${message_id} -->`; // Always a technical comment
+async function findPreviousComment(github, repo, issue_number) {
+    const HEADER = `<!-- Inclusive Terminology Pull Request Comment -->`; // Always a technical comment
     const { data: comments } = await github.issues.listComments({
         ...repo,
         issue_number

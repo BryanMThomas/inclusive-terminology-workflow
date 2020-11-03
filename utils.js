@@ -39,8 +39,8 @@ function checkFile(file) {
     return termsFound
 }
 
-async function createComment(github, repo, issue_number, message_id, comment) {
-    const HEADER = `<!-- Inclusive Terminology Pull Request Comment - ${message_id} -->`;
+async function createComment(github, repo, issue_number, comment) {
+    const HEADER = `<!-- Inclusive Terminology Pull Request Comment -->`;
     await github.issues.createComment({
         ...repo,
         issue_number,
@@ -48,8 +48,8 @@ async function createComment(github, repo, issue_number, message_id, comment) {
     });
 }
 
-async function updateComment(github, repo, comment_id, message_id, comment) {
-    const HEADER = `<!-- Inclusive Terminology Pull Request Comment - ${message_id} -->`;
+async function updateComment(github, repo, comment_id, comment) {
+    const HEADER = `<!-- Inclusive Terminology Pull Request Comment -->`;
     await github.issues.updateComment({
         ...repo,
         comment_id,
@@ -57,8 +57,8 @@ async function updateComment(github, repo, comment_id, message_id, comment) {
     });
 }
 
-async function findPreviousComment(github, repo, issue_number, message_id) {
-    const HEADER = `<!-- Inclusive Terminology Pull Request Comment - ${message_id} -->`; // Always a technical comment
+async function findPreviousComment(github, repo, issue_number) {
+    const HEADER = `<!-- Inclusive Terminology Pull Request Comment -->`; // Always a technical comment
     const { data: comments } = await github.issues.listComments({
         ...repo,
         issue_number
