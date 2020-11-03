@@ -7,8 +7,12 @@ function generateComment(filesList) {
     const filteredFilesList = filesList.filter((value) => fs.existsSync(value));
     //Iterate through files checking each one
     let checkRes = filteredFilesList.map(file => {
-        const resp = checkFile(file)
-        return { filePath: file, result: resp }
+        try{
+            const resp = checkFile(file)
+            return { filePath: file, result: resp }
+        }catch(err){
+            console.log("Error on File: ", file, " Error: ", err)
+        }
     })
     //Return formatted response to comment on PR
     return formatResponse(checkRes)
