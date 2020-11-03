@@ -1,23 +1,7 @@
-const { Toolkit } = require('actions-toolkit')
+const core = require('@actions/core');
+const path = require("path")
+const { findPreviousComment, createComment, updateComment, generateComment } = require("./utils")
 
-describe('Inclusive Terminology Workflow', () => {
-  let action, tools
-
-  // Mock Toolkit.run to define `action` so we can call it
-  Toolkit.run = jest.fn((actionFn) => { action = actionFn })
-  // Load up our entrypoint file
-  require('.')
-
-  beforeEach(() => {
-    // Create a new Toolkit instance
-    tools = new Toolkit()
-    // Mock methods on it!
-    tools.exit.success = jest.fn()
-  })
-
-  it('exits successfully', () => {
-    action(tools)
-    expect(tools.exit.success).toHaveBeenCalled()
-    expect(tools.exit.success).toHaveBeenCalledWith('Exited successfully')
-  })
-})
+test('TODO TEST', async () => {
+  await expect(true);
+});

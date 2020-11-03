@@ -7,9 +7,11 @@ inputs:
   pr_only:
     description: "Whether to only run on files changed in this PR"
     default: true
+  GITHUB_TOKEN:
+    description: "enter GITHUB_TOKEN here"
 runs:
-  using: docker
-  image: Dockerfile
+  using: 'node12'
+  main: 'dist/index.js'
 branding:
   icon: alert-circle
   color: purple
