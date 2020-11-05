@@ -20,7 +20,7 @@ function formatFileTable(res) {
     }
     console.log(`File Path: ${process.cwd()}`)
     let filePath = path.relative(process.cwd(), res.filePath)
-    let header = `### File: ${filePath}\n`
+    let header = `### ${filePath}\n`
     let tableHeader = `| Line Number | Word | Term |\n| :---: | :---: | :--- |\n`
 
     let rows = res.result.map(item => formatRow(item))

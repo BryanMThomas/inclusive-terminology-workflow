@@ -26,6 +26,7 @@ function checkFile(file) {
     //TODO: More efficient way to compare file contents to dictionary
     console.log(`checking ${file}`)
     let termsFound = [];
+    try{
     const body = fs.readFileSync(file, "utf-8");
     let lineArr = body.split(/\r?\n/);
     lineArr.forEach((line, index) => { //LOOP 1 - each line of the file
@@ -41,7 +42,11 @@ function checkFile(file) {
                 }
             }
         }
-    })
+    })}
+    catch(err){
+        console.log(`ERROR READING FILE: ${file} \n`)
+        console.log(`ERROR: ${err}`)
+    }
     return termsFound
 }
 

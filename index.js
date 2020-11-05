@@ -20,7 +20,8 @@ async function run() {
     const octokit = github.getOctokit(githubToken);
 
     //get all Files in workspace that match globPattern
-    const globber = await glob.create('*');
+    const patterns = ['*','!.git']
+    const globber = await glob.create(patterns.join('\n'));
     let files = await globber.glob()
 
     //only scan changed files if allFiles is set to false
