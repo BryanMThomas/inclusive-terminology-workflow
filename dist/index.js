@@ -11238,6 +11238,7 @@ function checkFile(file) {
         console.log(`ERROR READING FILE: ${file} \n`)
         console.log(`ERROR: ${err}`)
     }
+    console.log("TERMS FOUND: ", termsFound.toString())
     return termsFound === undefined ? [] : termsFound
 
     //TODO return error to surface in comment?
