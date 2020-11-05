@@ -1,10 +1,10 @@
 const path = require("path")
 
-function formatResponse(checkRes) {
+function formatResponse(foundTermsRes) {
     let header = `# Inclusive Terms Report\n Please make the following language changes.\n`
     let success = `### :sparkles: :rocket: :sparkles: 0 Non-Inclusive Terms Found :sparkles: :rocket: :sparkles:`
 
-    let sections = checkRes.map(res => formatFileTable(res))
+    let sections = foundTermsRes.map(res => formatFileTable(res))
 
     if (sections.every(section => section === '') || sections.length == 0) {
         return `${header}${success}`

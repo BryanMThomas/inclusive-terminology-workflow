@@ -7,11 +7,11 @@ require('./sourcemap-register.js');module.exports =
 
 const path = __webpack_require__(5622)
 
-function formatResponse(checkRes) {
+function formatResponse(foundTermsRes) {
     let header = `# Inclusive Terms Report\n Please make the following language changes.\n`
     let success = `### :sparkles: :rocket: :sparkles: 0 Non-Inclusive Terms Found :sparkles: :rocket: :sparkles:`
 
-    let sections = checkRes.map(res => formatFileTable(res))
+    let sections = foundTermsRes.map(res => formatFileTable(res))
 
     if (sections.every(section => section === '') || sections.length == 0) {
         return `${header}${success}`
@@ -113,8 +113,7 @@ async function run() {
       await createComment(octokit, github.context.repo, pullRequestNumber, prBotComment);
     }
   } catch (err) {
-    console.log("ERROR ", err)
-    //core.setFailed("ERROR IN RUN")
+    core.setFailed(err)
   }
 }
 
@@ -11191,7 +11190,7 @@ function generateComment(filesList) {
     //Verifies files are accessible
     const filteredFilesList = filesList.filter((value) => fs.existsSync(value));
     //Iterate through files checking each one
-    let checkRes = filteredFilesList.map(file => {
+    let foundTermsRes = filteredFilesList.map(file => {
         try {
             const resp = checkFile(file)
             return {
@@ -11203,7 +11202,7 @@ function generateComment(filesList) {
         }
     })
     //Return formatted response to comment on PR
-    return formatResponse(checkRes)
+    return formatResponse(foundTermsRes)
 }
 
 //Verified contents of file against dictionary

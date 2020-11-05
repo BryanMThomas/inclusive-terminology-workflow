@@ -6,7 +6,7 @@ function generateComment(filesList) {
     //Verifies files are accessible
     const filteredFilesList = filesList.filter((value) => fs.existsSync(value));
     //Iterate through files checking each one
-    let checkRes = filteredFilesList.map(file => {
+    let foundTermsRes = filteredFilesList.map(file => {
         try {
             const resp = checkFile(file)
             return {
@@ -18,7 +18,7 @@ function generateComment(filesList) {
         }
     })
     //Return formatted response to comment on PR
-    return formatResponse(checkRes)
+    return formatResponse(foundTermsRes)
 }
 
 //Verified contents of file against dictionary
