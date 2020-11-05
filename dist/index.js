@@ -11218,8 +11218,10 @@ function checkFile(file) {
     try{
     const body = fs.readFileSync(file, "utf-8");
     let lineArr = body.split(/\r?\n/);
+    console.log("Line Arr: ",lineArr.toString())
     lineArr.forEach((line, index) => { //LOOP 1 - each line of the file
         let lineContentsArr = line.toLowerCase().split(/\s|\n|\r|,/g)
+        console.log("Line Contents Arr: ",lineContentsArr.toString())
         for (let word of lineContentsArr) { //LOOP 2 each word of the line
             for (let term of terminologyDict) { //LOOP 3 each term in the dict
                 if (word.includes(term)) {
