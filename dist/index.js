@@ -11195,10 +11195,13 @@ function generateComment(filesList) {
     const filteredFilesList = filesList.filter((value) => fs.existsSync(value));
     //Iterate through files checking each one
     let checkRes = filteredFilesList.map(file => {
-        try{
+        try {
             const resp = checkFile(file)
-            return { filePath: file, result: resp }
-        }catch(err){
+            return {
+                filePath: file,
+                result: resp
+            }
+        } catch (err) {
             console.log("Error on File: ", file, " Error: ", err)
         }
     })
@@ -11207,23 +11210,26 @@ function generateComment(filesList) {
 }
 
 //Verified contents of file against dictionary
-function checkFile(file) { 
+function checkFile(file) {
     //TODO: More efficient way to compare file contents to dictionary
     console.log(`checking ${file}`)
-    const body = fs.readFileSync(file, "utf-8");
-    const fileContentsArr = body.toLowerCase().split(/\s|\n|\r|,/g)
     let termsFound = [];
-    for (let word of fileContentsArr) {
-        for (let term of terminologyDict) {
-            if (word.includes(term)) {
-                termsFound.push({
-                    "termFound": term,
-                    "wordFound": word,
-                    "line": "TODO"
-                })
+    const body = fs.readFileSync(file, "utf-8");
+    let lineArr = body.split(/\r?\n/);
+    lineArr.forEach((line, index) => { //LOOP 1 - each line of the file
+        let lineContentsArr = line.toLowerCase().split(/\s|\n|\r|,/g)
+        for (let word of lineContentsArr) { //LOOP 2 each word of the line
+            for (let term of terminologyDict) { //LOOP 3 each term in the dict
+                if (word.includes(term)) {
+                    termsFound.push({
+                        "termFound": term,
+                        "wordFound": word,
+                        "line": index + 1
+                    })
+                }
             }
         }
-    }
+    })
     return termsFound
 }
 
@@ -11252,9 +11258,9 @@ async function findPreviousComment(github, repo, issue_number) {
         issue_number
     });
 
-    comments.map(comment =>{
-        console.log("MATCH: ",comment.body.startsWith(HEADER))
-        console.log("Body",comment.body)
+    comments.map(comment => {
+        console.log("MATCH: ", comment.body.startsWith(HEADER))
+        console.log("Body", comment.body)
     })
 
     return comments.find(comment => comment.body.startsWith(HEADER));
