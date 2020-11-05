@@ -18,7 +18,6 @@ function formatResponse(checkRes) {
     } else {
         return `${header}${sections.join('\n')}`
     }
-
 }
 
 function formatFileTable(res) {
@@ -26,10 +25,10 @@ function formatFileTable(res) {
     if (res.result.length == 0) {
         return ''
     }
-
-    let filePath = path.relative('/github/workspace', res.filePath)
-    let header = `### ${filePath}\n`
-    let tableHeader = `| Level | Location | Word | Term |\n| :---: | :---: | :---: | :--- |\n`
+    console.log(`File Path: ${process.cwd()}`)
+    let filePath = path.relative(process.cwd(), res.filePath)
+    let header = `### File: ${filePath}\n`
+    let tableHeader = `| Line Number | Word | Term |\n| :---: | :---: | :--- |\n`
 
     let rows = res.result.map(item => formatRow(item))
 
@@ -37,12 +36,7 @@ function formatFileTable(res) {
 }
 
 function formatRow(item) {
-    //TODO: Implement Status?
-    let status = `:warning:`
-    if (Math.random()>.5) {
-        status = `:stop_sign:`
-    }
-    return `| ${status} | ${item.line} | ${item.wordFound} | ${item.termFound} |`
+    return `| ${item.line} | ${item.wordFound} | ${item.termFound} |`
 }
 
 module.exports = {formatResponse}
