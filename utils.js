@@ -3,7 +3,7 @@ const { terminologyDict } = require('./terminologyDict');
 const { formatResponse } = require('./format')
 
 function generateComment(filesList) {
-    //Verifies files are accessible
+    //Verifies files are accessible and filter out directories
     const filteredFilesList = filesList.filter((value) => fs.existsSync(value) && !fs.lstatSync(value).isDirectory());
     //Iterate through files checking each one
     let foundTermsRes = filteredFilesList.map(file => {
@@ -24,10 +24,6 @@ function generateComment(filesList) {
 //Verified contents of file against dictionary
 function checkFile(file) {
     //TODO: More efficient way to compare file contents to dictionary
-    if (fs.lstatSync(file).isDirectory()) { //checks for directories
-        console.log(`FOUND DIRECTORY NOT FILE ${file}`)
-        return [];
-      }
     console.log(`checking ${file}`)
     let termsFound = [];
     try{
@@ -38,7 +34,6 @@ function checkFile(file) {
         for (let word of lineContentsArr) { //LOOP 2 each word of the line
             for (let term of terminologyDict) { //LOOP 3 each term in the dict
                 if (word.includes(term)) {
-                    console.log("FOUND WORD: ", word," ", term)
                     termsFound.push({
                         "termFound": term,
                         "wordFound": word,
