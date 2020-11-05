@@ -63,6 +63,7 @@ async function run() {
     if (!pullRequestNumber) { // event was not a pull request
       console.log('Unexpected event occurred. action context: ', github.context.payload)
       github.exit.neutral('Exited with unexpected event')
+      return
     }
 
     const octokit = github.getOctokit(githubToken);
@@ -111,8 +112,8 @@ async function run() {
       console.log("Created new comment")
       await createComment(octokit, github.context.repo, pullRequestNumber, prBotComment);
     }
-  } catch ({ message }) {
-    core.setFailed(message);
+  } catch (err) {
+    core.setFailed(err.message)
   }
 }
 
