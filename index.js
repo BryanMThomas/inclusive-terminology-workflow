@@ -65,7 +65,8 @@ async function run() {
       await createComment(octokit, github.context.repo, pullRequestNumber, prBotComment);
     }
   } catch (err) {
-    core.setFailed("ERROR IN RUN")
+    console.log("ERROR ", err)
+    //core.setFailed("ERROR IN RUN")
   }
 }
 
