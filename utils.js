@@ -26,7 +26,7 @@ function checkFile(file) {
     //TODO: More efficient way to compare file contents to dictionary
     if (fs.lstatSync(file).isDirectory()) { //checks for directories
         console.log(`FOUND DIRECTORY NOT FILE ${file}`)
-        return;
+        return [];
       }
     console.log(`checking ${file}`)
     let termsFound = [];
@@ -36,8 +36,6 @@ function checkFile(file) {
     lineArr.forEach((line, index) => { //LOOP 1 - each line of the file
         let lineContentsArr = line.toLowerCase().split(/\s|\n|\r|,/g)
         for (let word of lineContentsArr) { //LOOP 2 each word of the line
-            console.log("Word: ",lineContentsArr.toString())
-
             for (let term of terminologyDict) { //LOOP 3 each term in the dict
                 if (word.includes(term)) {
                     console.log("FOUND WORD: ", word," ", term)
@@ -54,10 +52,7 @@ function checkFile(file) {
         console.log(`ERROR READING FILE: ${file} \n`)
         console.log(`ERROR: ${err}`)
     }
-    console.log("TERMS FOUND: ", termsFound.toString())
-    console.log("TERMS FOUND 2: ", termsFound)
-    console.log("IS UNDEFINED ", termsFound == undefined)
-    return termsFound == undefined ? [] : termsFound
+    return termsFound
 
     //TODO return error to surface in comment?
 }
