@@ -12,7 +12,6 @@ function formatResponse(foundTermsRes) {
     let success = `### :sparkles: :rocket: :sparkles: 0 Non-Inclusive Terms Found :sparkles: :rocket: :sparkles:`
 
     let sections = foundTermsRes.map(res => formatFileTable(res))
-    console.log("SECTIONS " , sections)
 
     if (sections.every(section => section === '') || sections.length == 0) {
         return `${header}${success}`
@@ -70,7 +69,7 @@ async function run() {
     const octokit = github.getOctokit(githubToken);
 
     //get all Files in workspace that match globPattern
-    const patterns = ['*','!.git', '!.github']
+    const patterns = ['*','!.git']
     const globber = await glob.create(patterns.join('\n'));
     let files = await globber.glob()
 
@@ -11203,7 +11202,6 @@ function generateComment(filesList) {
             console.log("Error on File: ", file, " Error: ", err)
         }
     })
-    console.log("Found TERMS LIST " , foundTermsRes)
     //Return formatted response to comment on PR
     return formatResponse(foundTermsRes)
 }
@@ -11238,7 +11236,7 @@ function checkFile(file) {
         console.log(`ERROR READING FILE: ${file} \n`)
         console.log(`ERROR: ${err}`)
     }
-    return termsFound
+    return termsFound === undefined ? [] : termsFound
 
     //TODO return error to surface in comment?
 }
