@@ -21,7 +21,7 @@ async function run() {
     const octokit = github.getOctokit(githubToken);
 
     //get all Files in workspace that match globPattern
-    const patterns = ['*','!.git']
+    const patterns = ['*','!.git', '!.github']
     const globber = await glob.create(patterns.join('\n'));
     let files = await globber.glob()
 
