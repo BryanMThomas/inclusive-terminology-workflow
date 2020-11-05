@@ -52,6 +52,8 @@ function checkFile(file) {
         console.log(`ERROR: ${err}`)
     }
     return termsFound
+
+    //TODO return error to surface in comment?
 }
 
 async function createComment(github, repo, issue_number, comment) {

@@ -63,8 +63,8 @@ async function run() {
       console.log("Created new comment")
       await createComment(octokit, github.context.repo, pullRequestNumber, prBotComment);
     }
-  } catch (err) {
-    core.setFailed(error.message);
+  } catch ({ message }) {
+    core.setFailed(message);
   }
 }
 
