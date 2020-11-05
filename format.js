@@ -5,6 +5,7 @@ function formatResponse(foundTermsRes) {
     let success = `### :sparkles: :rocket: :sparkles: 0 Non-Inclusive Terms Found :sparkles: :rocket: :sparkles:`
 
     let sections = foundTermsRes.map(res => formatFileTable(res))
+    console.log("SECTIONS " , sections)
 
     if (sections.every(section => section === '') || sections.length == 0) {
         return `${header}${success}`

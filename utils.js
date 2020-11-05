@@ -17,6 +17,7 @@ function generateComment(filesList) {
             console.log("Error on File: ", file, " Error: ", err)
         }
     })
+    console.log("Found TERMS LIST " , foundTermsRes)
     //Return formatted response to comment on PR
     return formatResponse(foundTermsRes)
 }

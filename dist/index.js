@@ -12,6 +12,7 @@ function formatResponse(foundTermsRes) {
     let success = `### :sparkles: :rocket: :sparkles: 0 Non-Inclusive Terms Found :sparkles: :rocket: :sparkles:`
 
     let sections = foundTermsRes.map(res => formatFileTable(res))
+    console.log("SECTIONS " , sections)
 
     if (sections.every(section => section === '') || sections.length == 0) {
         return `${header}${success}`
@@ -113,6 +114,7 @@ async function run() {
       await createComment(octokit, github.context.repo, pullRequestNumber, prBotComment);
     }
   } catch (err) {
+    console.log(err);
     core.setFailed(err)
   }
 }
@@ -11201,6 +11203,7 @@ function generateComment(filesList) {
             console.log("Error on File: ", file, " Error: ", err)
         }
     })
+    console.log("Found TERMS LIST " , foundTermsRes)
     //Return formatted response to comment on PR
     return formatResponse(foundTermsRes)
 }
