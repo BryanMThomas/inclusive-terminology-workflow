@@ -11218,13 +11218,14 @@ function checkFile(file) {
     try{
     const body = fs.readFileSync(file, "utf-8");
     let lineArr = body.split(/\r?\n/);
-    console.log("Line Arr: ",lineArr.toString())
     lineArr.forEach((line, index) => { //LOOP 1 - each line of the file
         let lineContentsArr = line.toLowerCase().split(/\s|\n|\r|,/g)
-        console.log("Line Contents Arr: ",lineContentsArr.toString())
         for (let word of lineContentsArr) { //LOOP 2 each word of the line
+            console.log("Word: ",lineContentsArr.toString())
+
             for (let term of terminologyDict) { //LOOP 3 each term in the dict
                 if (word.includes(term)) {
+                    console.log("FOUND WORD: ", word," ", term)
                     termsFound.push({
                         "termFound": term,
                         "wordFound": word,
@@ -11239,7 +11240,9 @@ function checkFile(file) {
         console.log(`ERROR: ${err}`)
     }
     console.log("TERMS FOUND: ", termsFound.toString())
-    return termsFound === undefined ? [] : termsFound
+    console.log("TERMS FOUND 2: ", termsFound)
+    console.log("IS UNDEFINED ", termsFound == undefined)
+    return termsFound == undefined ? [] : termsFound
 
     //TODO return error to surface in comment?
 }
