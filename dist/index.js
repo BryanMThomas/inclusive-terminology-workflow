@@ -11207,6 +11207,10 @@ function generateComment(filesList) {
 //Verified contents of file against dictionary
 function checkFile(file) {
     //TODO: More efficient way to compare file contents to dictionary
+    if (fs.lstatSync(file).isDirectory()) { //checks for directories
+        console.log(`FOUND DIRECTORY NOT FILE ${file}`)
+        return;
+      }
     console.log(`checking ${file}`)
     let termsFound = [];
     try{
