@@ -11189,7 +11189,7 @@ const { formatResponse } = __webpack_require__(58)
 
 function generateComment(filesList) {
     //Verifies files are accessible
-    const filteredFilesList = filesList.filter((value) => fs.existsSync(value));
+    const filteredFilesList = filesList.filter((value) => fs.existsSync(value) && !fs.lstatSync(value).isDirectory());
     //Iterate through files checking each one
     let foundTermsRes = filteredFilesList.map(file => {
         try {
