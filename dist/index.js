@@ -111,8 +111,8 @@ async function run() {
       console.log("Created new comment")
       await createComment(octokit, github.context.repo, pullRequestNumber, prBotComment);
     }
-  } catch (err) {
-    core.setFailed(error.message);
+  } catch ({ message }) {
+    core.setFailed(message);
   }
 }
 
@@ -11235,6 +11235,8 @@ function checkFile(file) {
         console.log(`ERROR: ${err}`)
     }
     return termsFound
+
+    //TODO return error to surface in comment?
 }
 
 async function createComment(github, repo, issue_number, comment) {
