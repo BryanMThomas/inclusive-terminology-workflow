@@ -22,7 +22,7 @@ function formatFileTable(res) {
 
     let filePath = path.relative('/github/workspace', res.filePath)
     let header = `### ${filePath}\n`
-    let tableHeader = `| Level | Location | Word | Term |\n| :---: | :---: | :---: | :--- |\n`
+    let tableHeader = `| Location | Word | Term |\n| :---: | :---: | :---: | :--- |\n`
 
     let rows = res.result.map(item => formatRow(item))
 
@@ -30,12 +30,7 @@ function formatFileTable(res) {
 }
 
 function formatRow(item) {
-    //TODO: Implement Status?
-    let status = `:warning:`
-    if (Math.random()>.5) {
-        status = `:stop_sign:`
-    }
-    return `| ${status} | ${item.line} | ${item.wordFound} | ${item.termFound} |`
+    return `| ${item.line} | ${item.wordFound} | ${item.termFound} |`
 }
 
 module.exports = {formatResponse}
