@@ -44,7 +44,11 @@ jobs:
 
 TODO: 
 - Add source of non-inclusive terms
-- Identify location of non-inclusive terms
-- Limit scope of search all files
+- Efficient compare method
+- Identify location of non-inclusive terms (solved on version-1 branch)
+- Limit scope of search all files (solved on version-1 branch)
+- Find a way to run locally 
+- Find a way to write effective unit tests
+
 
 
